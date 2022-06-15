@@ -46,29 +46,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f'User {self.email} has been added to the database'
 
-class Contact(db.Model):
-    id = db.Column(db.String, primary_key = True)
-    name = db.Column(db.String(150), nullable = False)
-    email = db.Column(db.String(200))
-    phone_number = db.Column(db.String(20))
-    address = db.Column(db.String(200))
-    user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
-
-    def __init__(self,name,email,phone_number,address,user_token, id = ''):
-        self.id = self.set_id()
-        self.name = name
-        self.email = email
-        self.phone_number = phone_number
-        self.address = address
-        self.user_token = user_token
-
-
-    def __repr__(self):
-        return f'The following contact has been added to the phonebook: {self.name}'
-
-    def set_id(self):
-        return (secrets.token_urlsafe())
-
 class Book(db.Model):
     id = db.Column(db.String, primary_key = True)
     book_title = db.Column(db.String(300), nullable = False)
@@ -76,34 +53,26 @@ class Book(db.Model):
     author_name = db.Column(db.String(200))
     book_length = db.Column(db.String(200))
     book_type = db.Column(db.String(200))
-    user_id = db.Column(db.String(200))
     user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
 
-    def __init__(self,book_title,isbn,author_name,book_length,book_type,user_id,user_token, id = ''):
+    def __init__(self,book_title,isbn,author_name,book_length,book_type,user_token, id = ''):
         self.id = self.set_id()
         self.book_title = book_title
         self.isbn = isbn
         self.author_name = author_name
         self.book_length = book_length
         self.book_type = book_type
-        self.user_id = user_id
         self.user_token = user_token
 
     def __repr__(self):
-        return f'The following contact has been added to the phonebook: {self.book_title}'
+        return f'This book has been added to the library: {self.book_title}'
 
     def set_id(self):
         return (secrets.token_urlsafe())
-
-class ContactSchema(ma.Schema):
-    class Meta:
-        fields = ['id', 'name','email','phone_number', 'address']
     
 class BookSchema(ma.Schema):
     class Meta:
-        fields = ['id', 'book_title','isbn','author_name', 'book_length', 'book_type', 'user_id']
+        fields = ['id', 'book_title','isbn','author_name', 'book_length', 'book_type']
 
-contact_schema = ContactSchema()
-contacts_schema = ContactSchema(many=True)
 book_schema = BookSchema()
 books_schema = BookSchema(many=True)
